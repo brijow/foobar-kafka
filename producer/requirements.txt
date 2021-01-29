@@ -1,0 +1,2 @@
+kafka-python
+py7zr
