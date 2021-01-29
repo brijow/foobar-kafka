@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.8
 
 WORKDIR /usr/app
 
@@ -6,4 +6,4 @@ ADD ./requirements.txt ./
 RUN pip install -r requirements.txt
 ADD ./ ./
 
-CMD ["python3", "email_producer.py"]
+CMD ["python3", "spotify_producer.py"]

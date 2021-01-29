@@ -20,8 +20,9 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: 172.17.0.1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_MESSAGE_MAX_BYTES: 2000000
-      # Create emails.topic topic, with 1 partition, 1 replica
-      KAFKA_CREATE_TOPICS: "ham.topic:1:1,spam.topic:1:1"
+      # Create spotify.topic topic, with 1 partition, 1 replica
+      # Create twitter.topic topic, with 1 partition, 1 replica (not used currently)
+      KAFKA_CREATE_TOPICS: "spotify.topic:1:1,twitter.topic:1:1"
 
   kafka_manager:
     image: hlebalbau/kafka-manager:stable
