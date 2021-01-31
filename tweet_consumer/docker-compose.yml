@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  
+  tweetconsumer:
+    image: twitterconsumer
+    build: .
+    environment:
+      KAFKA_BROKER_URL: broker:9092
+      TOPIC_NAME: "${NEWTWEET_TOPIC_NAME}"
+      BATCH_SIZE: ${BATCH_SIZE}
+      SLEEP_TIME: ${SLEEP_TIME}
+    
+  tweet_testproducer:
+      image: twitterconsumer
+      environment:
+        KAFKA_BROKER_URL: broker:9092
+        TOPIC_NAME: "${NEWTWEET_TOPIC_NAME}"
+        BATCH_SIZE: ${BATCH_SIZE}
+        SLEEP_TIME: ${SLEEP_TIME}
+      command: ["python3", "python/test_consumer.py"]
+
+networks:
+  default:
+    external:
+      name: kafka-network
