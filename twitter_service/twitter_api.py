@@ -1,6 +1,6 @@
 import tweepy
 
-METRO_VANCOUVER_GOBOX = [-123.371556,49.009125,-122.264683,49.375294]
+METRO_VANCOUVER_GEOBOX = [-123.371556,49.009125,-122.264683,49.375294]
 
 # Twitter API Keys
 access_token = "1354933647602720781-uAAs2vePSl3spkdiFYKRz51LwNmQY0"
@@ -32,4 +32,4 @@ if __name__ == '__main__':
 
     stream_listener = stream_listener()
     stream = tweepy.Stream(auth = api.auth, listener=stream_listener)
-    stream.filter(locations=METRO_VANCOUVER_GOBOX)
+    stream.filter(locations=METRO_VANCOUVER_GEOBOX)
