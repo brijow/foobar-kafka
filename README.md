@@ -11,12 +11,19 @@ $ docker ps -a                                         # sanity check to make su
 
 > **Note:** Kafka front end is available at http://localhost:9000
 
+## Starting Tweet classifier consumer
+(Alternatively you can build first, but is not necessary, docker will do it anyway if it hasnt build before, but is required to apply new changes)
+$ docker-compose -f tweet_consumer/docker-compose.yml build
+
+Start tweet_consumer:
+$ docker-compose -f tweet_consumer/docker-compose.yml up -d  # start the producer that downloads spam email data and then sends random samples 
 
 ## Teardown
 
 To stop all running kakfa cluster services
 
 ```bash
+$ docker-compose -f tweet_consumer/docker-compose.yml down
 $ docker-compose -f kafka/docker-compose.yml down      # stop zookeeper, broker, and kafka-manager services
 $ docker-compose -f producer/docker-compose.yml down   # stop the producer
 ```
