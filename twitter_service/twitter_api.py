@@ -3,8 +3,8 @@ import tweepy
 METRO_VANCOUVER_GEOBOX = [-123.371556,49.009125,-122.264683,49.375294]
 
 # Twitter API Keys
-access_token = "1354933647602720781-uAAs2vePSl3spkdiFYKRz51LwNmQY0"
-access_token_secret = "S4OQjwPyeJ1VHSZyyjHcvZ1WiLPOt4Yg6pdMhv0q0VIS5"
+access_token = "1354933647602720781-kyLKKAzWlA46h26MTT4Fjr2fMf3Die"
+access_token_secret = "UePNCQbTz7lqjPpmaqUXd63eKGuR1cMhm4pbBFURsqRmW"
 consumer_key = "BbS4k0PqSa3y80IFnhUSjOXz4"
 consumer_secret = "GSE59GfdAsBwrN3S7c7s0GEuQPDTb4ilMNu0ry3iqwV0OYWVzm"
 
