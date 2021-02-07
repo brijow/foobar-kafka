@@ -1,4 +1,8 @@
+import json
+import os
+from time import sleep
 import tweepy
+from kafka import KafkaProducer
 
 METRO_VANCOUVER_GEOBOX = [-123.371556,49.009125,-122.264683,49.375294]
 
@@ -8,11 +12,28 @@ access_token_secret = "UePNCQbTz7lqjPpmaqUXd63eKGuR1cMhm4pbBFURsqRmW"
 consumer_key = "BbS4k0PqSa3y80IFnhUSjOXz4"
 consumer_secret = "GSE59GfdAsBwrN3S7c7s0GEuQPDTb4ilMNu0ry3iqwV0OYWVzm"
 
+# Kafka settings
+KAFKA_BROKER_URL = os.environ.get("KAFKA_BROKER_URL") if os.environ.get("KAFKA_BROKER_URL") else 'localhost:9092'
+TOPIC_NAME = os.environ.get("TOPIC_NAME") if os.environ.get("TOPIC_NAME")  else 'from_twitter'
+SLEEP_TIME = int(os.environ.get("SLEEP_TIME", 600))
+
 
 class stream_listener(tweepy.StreamListener):
 
+    def __init__(self):
+        super(stream_listener, self).__init__()
+        self.producer = KafkaProducer(
+            bootstrap_servers=KAFKA_BROKER_URL,
+            value_serializer=lambda x: json.dumps(x).encode('utf8'),
+            api_version=(0, 10, 1)
+        )
+
     def on_status(self, status):
-        print(status.text)
+        tweet = status.text
+        self.producer.send(TOPIC_NAME, str.encode(tweet))
+        self.producer.flush()
+        # print('a tweet sent to kafka')
+        return True
 
     def on_error(self, status_code):
         if status_code == 420:
@@ -20,16 +41,19 @@ class stream_listener(tweepy.StreamListener):
             return False
         print('Streaming Error: '+str(status_code))
 
+class twitter_stream():
+
+    def __init__(self):
+        self.auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        self.auth.set_access_token(access_token, access_token_secret)
+        self.stream_listener = stream_listener()
+    
+    def twitter_listener(self):
+        stream = tweepy.Stream(auth = self.auth, listener=self.stream_listener)
+        stream.filter(locations=METRO_VANCOUVER_GEOBOX)
 
 if __name__ == '__main__':
-    try:
-        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
-        api = tweepy.API(auth)
-        api.update_status('tweepy + oauth!')
-    except tweepy.TweepError as e:
-        print(e)
+    ts = twitter_stream()
+    ts.twitter_listener()
 
-    stream_listener = stream_listener()
-    stream = tweepy.Stream(auth = api.auth, listener=stream_listener)
-    stream.filter(locations=METRO_VANCOUVER_GEOBOX)
+
