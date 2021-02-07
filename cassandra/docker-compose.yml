@@ -2,7 +2,8 @@ version: '3'
 
 services:
   cassandradb:
-    image: cassandra
+    image: bootstrapcassandra
+    build: .
     ports:
       - 7000:7000
       - 9042:9042
