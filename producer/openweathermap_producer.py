@@ -32,15 +32,19 @@ def run():
     kafkaurl = KAFKA_BROKER_URL
     print("Setting up Weather producer at {}".format(kafkaurl))
     producer = KafkaProducer(
-        bootstrap_servers=[kafkaurl],
+        bootstrap_servers=kafkaurl,
         # Encode all values as JSON
         value_serializer=lambda x: json.dumps(x).encode('ascii'),
     )
 
     while True:
         current_weather = asyncio.run(get_weather(city="Vancouver"))
+        current_weather = current_weather.to_dict() #@Seba changed from dataframe to dict for serialization
+        print("Sending new weather report") #adding prints for debugging in logs
         producer.send(TOPIC_NAME, value=current_weather)
+        print("New weather report sent")
         sleep(SLEEP_TIME)
+        print("Wake up!")
 
 
 if __name__ == "__main__":

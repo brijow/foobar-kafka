@@ -21,7 +21,7 @@ if __name__ == "__main__":
     with open(path + '/trainedpipe.pkl', 'rb') as f:
         classifier = pickle.load(f)
     print("Setting up Kafka consumer at {}".format(KAFKA_BROKER_URL))
-    consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=[KAFKA_BROKER_URL + ':9092'])
+    consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=[KAFKA_BROKER_URL])
     
     print('Waiting for msg...')
     for msg in consumer:

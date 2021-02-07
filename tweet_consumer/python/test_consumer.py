@@ -31,7 +31,7 @@ def get_random_tweet_batch(n=BATCH_SIZE):
 def run():
     print("Setting up Kafka producer at {}".format(KAFKA_BROKER_URL))
     producer = KafkaProducer(
-        bootstrap_servers=[KAFKA_BROKER_UR + ':9092'],
+        bootstrap_servers=[KAFKA_BROKER_URL],
         # Encode all values as JSON
         value_serializer=lambda x: json.dumps(x).encode('ascii'),
     )
