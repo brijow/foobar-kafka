@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+
+  twitter_api:
+    build: .
+    environment:
+      KAFKA_BROKER_URL: localhost:9092
+      TOPIC_NAME: "${from_twitter}"
+      BATCH_SIZE: ${BATCH_SIZE}
+      SLEEP_TIME: ${SLEEP_TIME}
+
+networks:
+  default:
+    external:
+      name: kafka-network
