@@ -1,0 +1,6 @@
+.DS_Store
+.vscode/launch.json
+.vscode/settings.json
+cassandra/data/
+tweet_consumer/.vscode/launch.json
+tweet_consumer/.vscode/settings.json
