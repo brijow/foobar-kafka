@@ -13,6 +13,7 @@ services:
       ZOO_MY_ID: 1
 
   broker:
+    container_name: broker
     image: wurstmeister/kafka
     ports:
       - 9092:9092

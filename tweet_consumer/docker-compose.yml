@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  
   tweetconsumer:
+    container_name: twitterconsumer
     image: twitterconsumer
     build: .
     environment:
@@ -10,8 +10,8 @@ services:
       TOPIC_NAME: "${NEWTWEET_TOPIC_NAME}"
       BATCH_SIZE: ${BATCH_SIZE}
       SLEEP_TIME: ${SLEEP_TIME}
-    
   tweet_testproducer:
+      container_name: twitter_test
       image: twitterconsumer
       environment:
         KAFKA_BROKER_URL: broker:9092
@@ -19,7 +19,15 @@ services:
         BATCH_SIZE: ${BATCH_SIZE}
         SLEEP_TIME: ${SLEEP_TIME}
       command: ["python3", "python/test_consumer.py"]
-
+  weather_consumer:
+      container_name: weatherconsumer
+      image: twitterconsumer
+      environment:
+        KAFKA_BROKER_URL: broker:9092
+        TOPIC_NAME: "${WEATHER_TOPIC_NAME}"
+        BATCH_SIZE: ${BATCH_SIZE}
+        SLEEP_TIME: ${SLEEP_TIME}
+      command: ["python3", "python/weather_consumer.py"]
 networks:
   default:
     external:

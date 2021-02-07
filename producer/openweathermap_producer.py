@@ -8,7 +8,7 @@ from kafka import KafkaProducer
 from time import sleep
 
 KAFKA_BROKER_URL = os.environ.get("KAFKA_BROKER_URL")
-TOPIC_NAME = os.environ.get("WEATHER_TOPIC_NAME")
+TOPIC_NAME = os.environ.get("TOPIC_NAME")
 SLEEP_TIME = int(os.environ.get("SLEEP_TIME", 600))
 
 ApiInfo = namedtuple('ApiInfo', ['name', 'access_token'])
@@ -29,8 +29,10 @@ async def get_weather(city):
 
 
 def run():
+    kafkaurl = KAFKA_BROKER_URL
+    print("Setting up Weather producer at {}".format(kafkaurl))
     producer = KafkaProducer(
-        bootstrap_servers=KAFKA_BROKER_URL,
+        bootstrap_servers=[kafkaurl],
         # Encode all values as JSON
         value_serializer=lambda x: json.dumps(x).encode('ascii'),
     )
