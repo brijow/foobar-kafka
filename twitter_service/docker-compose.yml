@@ -1,14 +1,14 @@
 version: "3"
 
 services:
-
-  twitter_api:
+  twitter_service:
+    container_name: twitter_service
     build: .
     environment:
-      KAFKA_BROKER_URL: localhost:9092
-      TOPIC_NAME: "${from_twitter}"
+      KAFKA_BROKER_URL: broker:9092
+      TOPIC_NAME: "${WEATHER_TOPIC_NAME}"
       BATCH_SIZE: ${BATCH_SIZE}
-      SLEEP_TIME: ${SLEEP_TIME}
+      SLEEP_TIME: ${WEATHER_SLEEP_TIME}
 
 networks:
   default:
