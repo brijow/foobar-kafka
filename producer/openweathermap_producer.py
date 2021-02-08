@@ -1,4 +1,4 @@
-"""Produce dumb openweathermap content to 'openweathermap.topic' kafka topic."""
+"""Produce openweathermap content to 'weather' kafka topic."""
 import asyncio
 import json
 import os
@@ -48,7 +48,7 @@ def run():
         now = time.localtime()
         current_weather['report_time'] = time.strftime(
             "%Y-%m-%d %H:%M:%S", now)
-        current_weather = current_weather.to_json()
+        current_weather = current_weather.to_dict()
         # adding prints for debugging in logs
         print("Sending new weather report iteration - {}".format(iterator))
         producer.send(TOPIC_NAME, value=current_weather)
