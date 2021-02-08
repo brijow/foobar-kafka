@@ -1,6 +1,6 @@
 CREATE TABLE weatherreport (
-  UUID TEXT,
   forecastdate TIMESTAMP,
+  location TEXT,
   description TEXT,
   temp FLOAT,
   feels_like FLOAT,
@@ -11,5 +11,5 @@ CREATE TABLE weatherreport (
   wind FLOAT,
   sunrise BIGINT,
   sunset BIGINT,
-  PRIMARY KEY (description, UUID)
+  PRIMARY KEY (location, forecastdate)
 );
