@@ -2,14 +2,15 @@
 import asyncio
 import json
 import os
+import time
 from collections import namedtuple
 from dataprep.connector import connect
 from kafka import KafkaProducer
-from time import sleep
+
 
 KAFKA_BROKER_URL = os.environ.get("KAFKA_BROKER_URL")
 TOPIC_NAME = os.environ.get("TOPIC_NAME")
-SLEEP_TIME = int(os.environ.get("SLEEP_TIME", 600))
+SLEEP_TIME = int(os.environ.get("SLEEP_TIME", 60))
 
 ApiInfo = namedtuple('ApiInfo', ['name', 'access_token'])
 apiInfo = ApiInfo('openweathermap', '73d0140e5ab3cfac25c117068562e17e')
@@ -30,6 +31,9 @@ async def get_weather(city):
 
 def run():
     kafkaurl = KAFKA_BROKER_URL
+    locations = ["Vancouver"]
+    iterator = 0
+    repeat_request = SLEEP_TIME/len(locations)
     print("Setting up Weather producer at {}".format(kafkaurl))
     producer = KafkaProducer(
         bootstrap_servers=kafkaurl,
@@ -38,13 +42,20 @@ def run():
     )
 
     while True:
-        current_weather = asyncio.run(get_weather(city="Vancouver"))
-        current_weather = current_weather.to_dict() #@Seba changed from dataframe to dict for serialization
-        print("Sending new weather report") #adding prints for debugging in logs
+        location = locations[(iterator+1) % len(locations)]
+        current_weather = asyncio.run(get_weather(city=location))
+        current_weather['location'] = location
+        now = time.localtime()
+        current_weather['report_time'] = time.strftime(
+            "%Y-%m-%d %H:%M:%S", now)
+        current_weather = current_weather.to_json()
+        # adding prints for debugging in logs
+        print("Sending new weather report iteration - {}".format(iterator))
         producer.send(TOPIC_NAME, value=current_weather)
         print("New weather report sent")
-        sleep(SLEEP_TIME)
-        print("Wake up!")
+        time.sleep(repeat_request)
+        print("Waking up!")
+        iterator += 1
 
 
 if __name__ == "__main__":
