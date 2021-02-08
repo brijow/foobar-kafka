@@ -7,7 +7,6 @@ services:
     environment:
       KAFKA_BROKER_URL: broker:9092
       TOPIC_NAME: "${WEATHER_TOPIC_NAME}"
-      BATCH_SIZE: ${BATCH_SIZE}
       SLEEP_TIME: ${WEATHER_SLEEP_TIME}
 
 networks:
