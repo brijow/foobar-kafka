@@ -32,7 +32,7 @@ class stream_listener(tweepy.StreamListener):
         twitter_df = {
             'tweet':tweet.encode('utf8'),
             'datetime': datetime.utcnow(),
-            'locaiton': 'MetroVancouver'
+            'location': 'MetroVancouver'
         }
         print(tweet)
         
