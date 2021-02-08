@@ -1,6 +1,9 @@
 FROM python:3.8
 
-WORKDIR /working
+WORKDIR /app
+
 ADD ./requirements.txt ./
 RUN pip install -r requirements.txt
-CMD ["python3", "twitter_api.py"]
+
+ADD ./ ./
+CMD ["python3", "-u","twitter_api.py"]

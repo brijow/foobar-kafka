@@ -1,6 +1,6 @@
 import json
 import os
-from time import sleep
+from datetime import datetime, timezone 
 import tweepy
 from kafka import KafkaProducer
 
@@ -15,7 +15,6 @@ consumer_secret = "GSE59GfdAsBwrN3S7c7s0GEuQPDTb4ilMNu0ry3iqwV0OYWVzm"
 # Kafka settings
 KAFKA_BROKER_URL = os.environ.get("KAFKA_BROKER_URL") if os.environ.get("KAFKA_BROKER_URL") else 'localhost:9092'
 TOPIC_NAME = os.environ.get("TOPIC_NAME") if os.environ.get("TOPIC_NAME")  else 'from_twitter'
-SLEEP_TIME = int(os.environ.get("SLEEP_TIME", 600))
 
 
 class stream_listener(tweepy.StreamListener):
@@ -30,7 +29,14 @@ class stream_listener(tweepy.StreamListener):
 
     def on_status(self, status):
         tweet = status.text
-        self.producer.send(TOPIC_NAME, str.encode(tweet))
+        twitter_df = {
+            'tweet':tweet.encode('utf8'),
+            'datetime': datetime.utcnow(),
+            'locaiton': 'MetroVancouver'
+        }
+        print(tweet)
+        
+        self.producer.send(TOPIC_NAME, value = twitter_df)
         self.producer.flush()
         # print('a tweet sent to kafka')
         return True
