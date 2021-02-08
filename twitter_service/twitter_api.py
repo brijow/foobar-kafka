@@ -30,8 +30,8 @@ class stream_listener(tweepy.StreamListener):
     def on_status(self, status):
         tweet = status.text
         twitter_df = {
-            'tweet':tweet.encode('utf8'),
-            'datetime': datetime.utcnow(),
+            'tweet':tweet,
+            'datetime': datetime.utcnow().timestamp(),
             'location': 'MetroVancouver'
         }
         print(tweet)
