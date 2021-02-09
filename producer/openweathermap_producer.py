@@ -38,7 +38,7 @@ def run():
     producer = KafkaProducer(
         bootstrap_servers=kafkaurl,
         # Encode all values as JSON
-        value_serializer=lambda x: json.dumps(x).encode('ascii'),
+        value_serializer=lambda x: str(x).encode('ascii'),
     )
 
     while True:
@@ -48,7 +48,7 @@ def run():
         now = time.localtime()
         current_weather['report_time'] = time.strftime(
             "%Y-%m-%d %H:%M:%S", now)
-        current_weather = current_weather.to_dict()
+        current_weather = current_weather.to_json()
         # adding prints for debugging in logs
         print("Sending new weather report iteration - {}".format(iterator))
         producer.send(TOPIC_NAME, value=current_weather)
