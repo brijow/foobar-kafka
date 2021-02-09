@@ -60,7 +60,6 @@ def get_tweets_for_model(cleaned_tokens_list):
         yield dict([token, True] for token in tweet_tokens)
 
 
-
 def trainModel():    
     positive_tweets = twitter_samples.strings('positive_tweets.json')
     negative_tweets = twitter_samples.strings('negative_tweets.json')
@@ -139,8 +138,12 @@ def trainRandomForest():
         pickle.dump(pipe, f)
 
 if __name__ == "__main__":
-    cwd = os.path.dirname(os.path.realpath(__file__)) + "/nltk_data"
+    path = os.path.dirname(os.path.realpath(__file__))
+    parent = os.path.dirname(path)
+    cwd = parent + "/nltk_data"
+    print("Set NLTK path to {}".format(cwd))
     nltk.data.path = [cwd]
+
     if len(sys.argv) > 1 and sys.argv[1] == "train" :
         trainRandomForest()
 

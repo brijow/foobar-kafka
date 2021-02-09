@@ -1,4 +1,4 @@
-"""Produce dumb openweathermap content to 'openweathermap.topic' kafka topic."""
+"""Produce openweathermap content to 'weather' kafka topic."""
 import asyncio
 import json
 import os
@@ -38,7 +38,7 @@ def run():
     producer = KafkaProducer(
         bootstrap_servers=kafkaurl,
         # Encode all values as JSON
-        value_serializer=lambda x: json.dumps(x).encode('ascii'),
+        value_serializer=lambda x: str(x).encode('ascii'),
     )
 
     while True:

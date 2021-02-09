@@ -13,3 +13,11 @@ CREATE TABLE weatherreport (
   sunset BIGINT,
   PRIMARY KEY (location, forecastdate)
 );
+
+CREATE TABLE twitterdata (
+  tweet_date TIMESTAMP,
+  location TEXT,
+  tweet TEXT,
+  classification TEXT,
+  PRIMARY KEY (location, tweet_date)
+);
