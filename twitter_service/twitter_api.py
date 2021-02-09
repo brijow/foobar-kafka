@@ -4,7 +4,8 @@ from datetime import datetime, timezone
 import tweepy
 from kafka import KafkaProducer
 
-METRO_VANCOUVER_GEOBOX = [-123.371556,49.009125,-122.264683,49.375294]
+TWIITER_API_GEOBOX_FILTER = [-123.371556,49.009125,-122.264683,49.375294]
+TWITTER_API_LANGS_FILTER = ['en']
 
 # Twitter API Keys
 access_token = "1354933647602720781-kyLKKAzWlA46h26MTT4Fjr2fMf3Die"
@@ -12,9 +13,13 @@ access_token_secret = "UePNCQbTz7lqjPpmaqUXd63eKGuR1cMhm4pbBFURsqRmW"
 consumer_key = "BbS4k0PqSa3y80IFnhUSjOXz4"
 consumer_secret = "GSE59GfdAsBwrN3S7c7s0GEuQPDTb4ilMNu0ry3iqwV0OYWVzm"
 
+
 # Kafka settings
 KAFKA_BROKER_URL = os.environ.get("KAFKA_BROKER_URL") if os.environ.get("KAFKA_BROKER_URL") else 'localhost:9092'
 TOPIC_NAME = os.environ.get("TOPIC_NAME") if os.environ.get("TOPIC_NAME")  else 'from_twitter'
+
+# a static location is used for now as a geolocation filter is imposed on twitter API
+TWEET_LOCATION = 'MetroVancouver'
 
 
 class stream_listener(tweepy.StreamListener):
@@ -32,7 +37,7 @@ class stream_listener(tweepy.StreamListener):
         twitter_df = {
             'tweet':tweet,
             'datetime': datetime.utcnow().timestamp(),
-            'location': 'MetroVancouver'
+            'location': TWEET_LOCATION
         }
         print(tweet)
         
@@ -56,7 +61,8 @@ class twitter_stream():
     
     def twitter_listener(self):
         stream = tweepy.Stream(auth = self.auth, listener=self.stream_listener)
-        stream.filter(locations=METRO_VANCOUVER_GEOBOX)
+        stream.filter(locations=TWIITER_API_GEOBOX_FILTER, 
+                        languages=TWITTER_API_LANGS_FILTER)
 
 if __name__ == '__main__':
     ts = twitter_stream()
