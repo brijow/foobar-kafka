@@ -3,15 +3,19 @@ import os
 from datetime import datetime, timezone 
 import tweepy
 from kafka import KafkaProducer
+import configparser
 
 TWIITER_API_GEOBOX_FILTER = [-123.371556,49.009125,-122.264683,49.375294]
 TWITTER_API_LANGS_FILTER = ['en']
 
 # Twitter API Keys
-access_token = "1354933647602720781-kyLKKAzWlA46h26MTT4Fjr2fMf3Die"
-access_token_secret = "UePNCQbTz7lqjPpmaqUXd63eKGuR1cMhm4pbBFURsqRmW"
-consumer_key = "BbS4k0PqSa3y80IFnhUSjOXz4"
-consumer_secret = "GSE59GfdAsBwrN3S7c7s0GEuQPDTb4ilMNu0ry3iqwV0OYWVzm"
+config = configparser.ConfigParser()
+config.read('twitter_service/twitter_service.cfg')
+api_credential = config['twitter_api_credential']
+access_token = api_credential['access_token']
+access_token_secret = api_credential['access_token_secret']
+consumer_key = api_credential['consumer_key']
+consumer_secret = api_credential['consumer_secret']
 
 
 # Kafka settings
