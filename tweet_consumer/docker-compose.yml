@@ -7,27 +7,22 @@ services:
     build: .
     environment:
       KAFKA_BROKER_URL: broker:9092
-      TOPIC_NAME: "${NEWTWEET_TOPIC_NAME}"
-      BATCH_SIZE: ${BATCH_SIZE}
-      SLEEP_TIME: ${SLEEP_TIME}
-  # tweet_testproducer:
-  #     container_name: twitter_test
-  #     image: twitterconsumer
-  #     environment:
-  #       KAFKA_BROKER_URL: broker:9092
-  #       TOPIC_NAME: "${NEWTWEET_TOPIC_NAME}"
-  #       BATCH_SIZE: ${BATCH_SIZE}
-  #       SLEEP_TIME: ${SLEEP_TIME}
-  #     command: ["python3", "python/test_consumer.py"]
-  weather_consumer:
+      TOPIC_NAME: ${NEWTWEET_TOPIC_NAME}
+      CASSANDRA_HOST: ${CASSANDRA_HOST}
+      CASSANDRA_KEYSPACE: ${CASSANDRA_KEYSPACE}
+    volumes:
+      - $PWD/tweet_consumer/csvdata:/usr/app/data
+  weatherconsumer:
       container_name: weatherconsumer
       image: twitterconsumer
       environment:
         KAFKA_BROKER_URL: broker:9092
-        TOPIC_NAME: "${WEATHER_TOPIC_NAME}"
+        TOPIC_NAME: ${WEATHER_TOPIC_NAME}
         CASSANDRA_HOST: ${CASSANDRA_HOST}
         CASSANDRA_KEYSPACE: ${CASSANDRA_KEYSPACE}
-      command: ["python3", "python/weather_consumer.py"]
+      command: ["python", "-u","python/weather_consumer.py"]
+      volumes:
+        - $PWD/tweet_consumer/csvdata:/usr/app/data
 networks:
   default:
     external:
