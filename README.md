@@ -40,8 +40,10 @@ $ docker network rm kafka-network
 
 ## Load data utility
 From a console run the following:
+```bash
 $ python consumers/python/cassandrautils.py twitter {PATH_TO_twitter.csv}
 $ python consumers/python/cassandrautils.py weather {PATH_TO_weather.csv}
+```
 
 ## FAQs
 
