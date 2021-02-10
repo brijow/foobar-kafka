@@ -2,5 +2,5 @@
 .vscode/launch.json
 .vscode/settings.json
 cassandra/data/
-tweet_consumer/.vscode/launch.json
-tweet_consumer/.vscode/settings.json
+consumers/.vscode/launch.json
+consumers/.vscode/settings.json
