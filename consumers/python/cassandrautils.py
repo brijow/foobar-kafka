@@ -1,5 +1,6 @@
 import os, sys, re, gzip, datetime
 from cassandra.cluster import Cluster, BatchStatement, ConsistencyLevel, uuid
+import pandas as pd
 
 tablename = os.getenv("weather.table", "weatherreport")
 twittertable  = os.getenv("twittertable.table", "twitterdata")
@@ -27,7 +28,7 @@ def saveTwitterDf(dfrecords, cassandrahost, keyspace):
             print('inserting ' + str(counter) + ' records')
             totalcount += counter
             counter = 0
-            batches.append(batches)
+            batches.append(batch)
             batch = BatchStatement(consistency_level=ConsistencyLevel.QUORUM)
     if counter != 0:
         batches.append(batch)
@@ -62,7 +63,7 @@ def saveWeatherreport(dfrecords, cassandrahost, keyspace):
             print('inserting ' + str(counter) + ' records')
             totalcount += counter
             counter = 0
-            batches.append(batches)
+            batches.append(batch)
             batch = BatchStatement(consistency_level=ConsistencyLevel.QUORUM)
     if counter != 0:
         batches.append(batch)
@@ -70,3 +71,23 @@ def saveWeatherreport(dfrecords, cassandrahost, keyspace):
     rs = [session.execute(b, trace=True) for b in batches]
     
     print('Inserted ' + str(totalcount) + ' rows in total')
+
+
+def loadDF(targetfile, target, host, keyspace):
+    if target == 'weather':
+        colsnames=['description', 'temp', 'feels_like', 'temp_min', 'temp_max', 'pressure', 'humidity', 'wind', 'sunrise', 'sunset', 'location', 'report_time']
+        dfData = pd.read_csv(targetfile, header=None, parse_dates=True, names=colsnames)
+        dfData['report_time'] = pd.to_datetime(dfData['report_time'])
+        saveWeatherreport(dfData, host, keyspace)
+    elif target == 'twitter':
+        colsnames=['tweet', 'datetime', 'location', 'classification']
+        dfData = pd.read_csv(targetfile, header=None, parse_dates=True, names=colsnames)
+        dfData['datetime'] = pd.to_datetime(dfData['datetime'])
+        saveTwitterDf(dfData, host, keyspace)
+
+if __name__ == "__main__":
+    keyspace = 'kafkapipeline'
+    host = 'localhost'
+    target = sys.argv[1]
+    targetfile = sys.argv[2]
+    loadDF(targetfile, target, host, keyspace)
