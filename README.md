@@ -10,16 +10,19 @@ $ docker ps -a                                         # sanity check to make su
 ```
 
 > **Note:** Kafka front end is available at http://localhost:9000
+
 ## Starting Cassandra
+
 Cassandra is setup so it runs keyspace and schema creation scripts at first setup so it is ready to use.
-$ docker-compose -f cassandra/docker-composer.yml up -d
+$ docker-compose -f cassandra/docker-compose.yml up -d
 
 ## Starting Twitter classifier plus Weather consumer
-(Alternatively you can build first, but is not necessary, docker will do it anyway if it hasnt build before, but it is required to apply new changes)
-$ docker-compose -f tweet_consumer/docker-compose.yml build
 
-Start tweet_consumer:
-$ docker-compose -f tweet_consumer/docker-compose.yml up -d  # start the producer that downloads spam email data and then sends random samples
+(Alternatively you can build first, but is not necessary, docker will do it anyway if it hasnt build before, but it is required to apply new changes)
+$ docker-compose -f twitter_service/docker-compose.yml build
+
+Start twitter_service:
+$ docker-compose -f twitter_service/docker-compose.yml up -d # start the producer that downloads spam email data and then sends random samples
 
 ## Teardown
 
@@ -29,7 +32,7 @@ To stop all running kakfa cluster services
 $ docker-compose -f tweet_consumer/docker-compose.yml down
 $ docker-compose -f kafka/docker-compose.yml down      # stop zookeeper, broker, and kafka-manager services
 $ docker-compose -f producer/docker-compose.yml down   # stop the producer
-$ docker-compose -f cassandra/docker-composer.yml down # stop Cassandra
+$ docker-compose -f cassandra/docker-compose.yml down # stop Cassandra
 ```
 
 To remove the kafka-network network:
@@ -39,9 +42,13 @@ $ docker network rm kafka-network
 ```
 
 ## Load data utility
+
 From a console run the following:
+
+```bash
 $ python consumers/python/cassandrautils.py twitter {PATH_TO_twitter.csv}
 $ python consumers/python/cassandrautils.py weather {PATH_TO_weather.csv}
+```
 
 ## FAQs
 
