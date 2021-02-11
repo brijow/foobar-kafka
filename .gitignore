@@ -4,6 +4,5 @@
 cassandra/data/
 consumers/.vscode/launch.json
 consumers/.vscode/settings.json
-twitter_service/twitter_service.cfg
 twitter_service/config.py
 
