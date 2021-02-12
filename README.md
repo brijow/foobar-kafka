@@ -3,11 +3,11 @@
 ## Starting kafka on docker
 
 ```bash
-$ docker network create kafka-network                  # create a new docker network for kafka cluster (zookeeper, broker, kafka-manager services, and kafka connect sink services)
-$ docker-compose -f kafka/docker-compose.yml up -d     # start single zookeeper, broker, and kafka-manager services
-$ docker-compose -f producer/docker-compose.yml up -d  # start the producer that retrieves open weather map
-$ docker-compose -f twitter_service/docker-compose.yml up -d # start the producer for twitter
-$ docker ps -a                                         # sanity check to make sure services are up: kafka_broker_1, kafka-manager, zookeeper, kafka-connect, producer and twitter service
+$ docker network create kafka-network                         # create a new docker network for kafka cluster (zookeeper, broker, kafka-manager services, and kafka connect sink services)
+$ docker-compose -f kafka/docker-compose.yml up -d            # start single zookeeper, broker, and kafka-manager services
+$ docker-compose -f owm-producer/docker-compose.yml up -d     # start the producer that retrieves open weather map
+$ docker-compose -f twitter-producer/docker-compose.yml up -d # start the producer for twitter
+$ docker ps -a                                                # sanity check to make sure services are up: kafka_broker_1, kafka-manager, zookeeper, kafka-connect, producer and twitter service
 ```
 
 > **Note:** 
@@ -37,15 +37,15 @@ $ docker-compose -f consumers/docker-compose.yml up -d
 To stop all running kakfa cluster services
 
 ```bash
-$ docker-compose -f consumers/docker-compose.yml down  # stop the consumers
+$ docker-compose -f consumers/docker-compose.yml down          # stop the consumers
 
-$ docker-compose -f producer/docker-compose.yml down   # stop open weather map producer
+$ docker-compose -f owm-producer/docker-compose.yml down       # stop open weather map producer
 
-$ docker-compose -f producer/docker-compose.yml down   # stop open weather map producer
+$ docker-compose -f twitter-producer/docker-compose.yml down   # stop twitter producer
 
-$ docker-compose -f kafka/docker-compose.yml down      # stop zookeeper, broker, kafka-manager and kafka-connect services
+$ docker-compose -f kafka/docker-compose.yml down              # stop zookeeper, broker, kafka-manager and kafka-connect services
 
-$ docker-compose -f cassandra/docker-compose.yml down # stop Cassandra
+$ docker-compose -f cassandra/docker-compose.yml down          # stop Cassandra
 ```
 
 To remove the kafka-network network:

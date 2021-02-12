@@ -1,13 +1,11 @@
 """Produce openweathermap content to 'weather' kafka topic."""
 import asyncio
 import configparser
-import json
 import os
 import time
 from collections import namedtuple
 from dataprep.connector import connect
 from kafka import KafkaProducer
-from datetime import datetime
 
 KAFKA_BROKER_URL = os.environ.get("KAFKA_BROKER_URL")
 TOPIC_NAME = os.environ.get("TOPIC_NAME")
@@ -29,7 +27,7 @@ sc = connect(apiInfo.name,
 async def get_weather(city):
     """Get the current weather details for the given city.
 
-    Note - Description returns null for now. 
+    Note - Description returns null for now.
     """
     df_weather = await sc.query("weather", q=city)
     return df_weather
@@ -39,7 +37,7 @@ def run():
     kafkaurl = KAFKA_BROKER_URL
     locations = ["Vancouver"]
     iterator = 0
-    repeat_request = SLEEP_TIME/len(locations)
+    repeat_request = SLEEP_TIME / len(locations)
     print("Setting up Weather producer at {}".format(kafkaurl))
     producer = KafkaProducer(
         bootstrap_servers=kafkaurl,
@@ -48,7 +46,7 @@ def run():
     )
 
     while True:
-        location = locations[(iterator+1) % len(locations)]
+        location = locations[(iterator + 1) % len(locations)]
         current_weather = asyncio.run(get_weather(city=location))
         current_weather['location'] = location
         now = time.localtime()
