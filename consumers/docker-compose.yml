@@ -7,7 +7,7 @@ services:
     build: .
     environment:
       KAFKA_BROKER_URL: broker:9092
-      TOPIC_NAME: ${NEWTWEET_TOPIC_NAME}
+      TOPIC_NAME: ${TWEET_TOPIC}
       SINK_TOPIC_NAME: ${TWITTER_SINK_TOPIC}
     volumes:
       - $PWD/consumers/csvdata:/usr/app/data
@@ -16,7 +16,7 @@ services:
     image: twitterconsumer
     environment:
       KAFKA_BROKER_URL: broker:9092
-      TOPIC_NAME: ${WEATHER_TOPIC_NAME}
+      TOPIC_NAME: ${WEATHER_TOPIC}
       CASSANDRA_HOST: ${CASSANDRA_HOST}
       CASSANDRA_KEYSPACE: ${CASSANDRA_KEYSPACE}
     command: ["python", "-u","python/weather_consumer.py"]
