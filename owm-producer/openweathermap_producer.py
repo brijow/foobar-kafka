@@ -25,10 +25,7 @@ sc = connect(apiInfo.name,
 
 
 async def get_weather(city):
-    """Get the current weather details for the given city.
-
-    Note - Description returns null for now.
-    """
+    # Get the current weather details for the given city.
     df_weather = await sc.query("weather", q=city)
     return df_weather
 
