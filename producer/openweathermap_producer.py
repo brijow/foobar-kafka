@@ -6,7 +6,7 @@ import time
 from collections import namedtuple
 from dataprep.connector import connect
 from kafka import KafkaProducer
-
+from datetime import datetime
 
 KAFKA_BROKER_URL = os.environ.get("KAFKA_BROKER_URL")
 TOPIC_NAME = os.environ.get("TOPIC_NAME")
@@ -38,7 +38,7 @@ def run():
     producer = KafkaProducer(
         bootstrap_servers=kafkaurl,
         # Encode all values as JSON
-        value_serializer=lambda x: str(x).encode('ascii'),
+        value_serializer=lambda x: x.encode('ascii'),
     )
 
     while True:
@@ -48,10 +48,11 @@ def run():
         now = time.localtime()
         current_weather['report_time'] = time.strftime(
             "%Y-%m-%d %H:%M:%S", now)
-        current_weather = current_weather.to_json()
+        current_weather = current_weather.to_json(orient="records")
+        sendit = current_weather[1:-1]
         # adding prints for debugging in logs
         print("Sending new weather report iteration - {}".format(iterator))
-        producer.send(TOPIC_NAME, value=current_weather)
+        producer.send(TOPIC_NAME, value=sendit)
         print("New weather report sent")
         time.sleep(repeat_request)
         print("Waking up!")
