@@ -1,5 +1,6 @@
 """Produce openweathermap content to 'weather' kafka topic."""
 import asyncio
+import configparser
 import json
 import os
 import time
@@ -12,8 +13,13 @@ KAFKA_BROKER_URL = os.environ.get("KAFKA_BROKER_URL")
 TOPIC_NAME = os.environ.get("TOPIC_NAME")
 SLEEP_TIME = int(os.environ.get("SLEEP_TIME", 60))
 
+config = configparser.ConfigParser()
+config.read('openweathermap_service.cfg')
+api_credential = config['openweathermap_api_credential']
+access_token = api_credential['access_token']
+
 ApiInfo = namedtuple('ApiInfo', ['name', 'access_token'])
-apiInfo = ApiInfo('openweathermap', '73d0140e5ab3cfac25c117068562e17e')
+apiInfo = ApiInfo('openweathermap', access_token)
 
 sc = connect(apiInfo.name,
              _auth={'access_token': apiInfo.access_token},
