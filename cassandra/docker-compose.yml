@@ -2,6 +2,7 @@ version: '3'
 
 services:
   cassandradb:
+    container_name: cassandra
     image: bootstrapcassandra
     build: .
     ports:

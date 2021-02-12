@@ -1,16 +1,15 @@
 from tweet_analytics import *
-from kafka import KafkaConsumer
+from kafka import KafkaConsumer, KafkaProducer
 import nltk, os, pickle
 from sklearn.pipeline import Pipeline
-import ast
+import ast, json
 import pandas as pd
 from cassandrautils import saveTwitterDf
 
 if __name__ == "__main__":
     print("Starting Twitter data consumer")
 
-    CASSANDRA_HOST = os.environ.get("CASSANDRA_HOST", "localhost")
-    CASSANDRA_KEYSPACE = os.environ.get("CASSANDRA_KEYSPACE", "kafkapipeline")
+    SINK_TOPIC = os.environ.get("SINK_TOPIC_NAME", "twittersink")
 
     path = os.path.dirname(os.path.realpath(__file__))
     parent = os.path.dirname(path)
@@ -26,30 +25,35 @@ if __name__ == "__main__":
         classifier = pickle.load(f)
     print("Setting up Kafka consumer at {}".format(KAFKA_BROKER_URL))
     consumer = KafkaConsumer(TOPIC_NAME, bootstrap_servers=[KAFKA_BROKER_URL])
-    
+    producer = KafkaProducer(
+            bootstrap_servers=KAFKA_BROKER_URL,
+            value_serializer=lambda x: x.encode('utf8'),
+            api_version=(0, 10, 1)
+        )
     print('Waiting for msg...')
     for msg in consumer:
         # print('got one!')
         msg = msg.value.decode('utf-8')
         data = ast.literal_eval(msg)
         df = pd.DataFrame([data])
-        
-        
+                
         target = df.loc[0].tweet.encode('unicode-escape')
         # target = target.encode('ascii', "ignore")
         target = target.decode('ascii', 'ignore')
-        
-        print(target)
-        
+                
         location = df.loc[0].location
         timestamp = pd.to_datetime(df.loc[0].datetime, unit='s', origin='unix') 
-
         print("Timestamp: {} Location: {}".format(timestamp, location))
         res = classifier.predict([target])
         classification = "Positive" if res == 1 else "Negative"
-        print("Classification: {}".format(classification))
-        df = pd.DataFrame([{"tweet" : target, "datetime" : timestamp, "location" : location, "classification" : classification}])
-        saveTwitterDf(df,CASSANDRA_HOST, CASSANDRA_KEYSPACE)
-        print("Saved to Cassandra")
+        dic = {"tweet" : target, "datetime" : timestamp.strftime('%Y-%m-%d %H:%M:%S'), "location" : location, "classification" : classification}
+        df = pd.DataFrame([dic])
+        # saveTwitterDf(df,CASSANDRA_HOST, CASSANDRA_KEYSPACE)
+        print("Saved to CSV")
         df.to_csv(csvbackupfile, mode='a', header=False, index=False)
+        print("Sending it to Cassandra Sink")
+        dic = json.dumps(dic)
+        producer.send(SINK_TOPIC, value = dic)
+        print("Sent")
+
     print("Bye-Bye")

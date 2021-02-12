@@ -10,7 +10,7 @@ TWITTER_API_LANGS_FILTER = ['en']
 
 # Twitter API Keys
 config = configparser.ConfigParser()
-config.read('twitter_service/twitter_service.cfg')
+config.read('twitter_service.cfg')
 api_credential = config['twitter_api_credential']
 access_token = api_credential['access_token']
 access_token_secret = api_credential['access_token_secret']
