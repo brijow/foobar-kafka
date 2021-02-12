@@ -5,9 +5,9 @@ services:
     container_name: twitter_service
     build: .
     environment:
-      KAFKA_BROKER_URL: broker:9092 #change to 'broker' instead of localhost so that i can talk to broker's hostname in the docker network
-      TOPIC_NAME: "${NEWTWEET_TOPIC_NAME}" #change to use topic name from .env file.
-      BATCH_SIZE: ${BATCH_SIZE}
+      KAFKA_BROKER_URL: broker:9092
+      TOPIC_NAME: "${TWEET_TOPIC}"
+      BATCH_SIZE: ${TWEET_BATCH_SIZE}
 
 networks:
   default:
