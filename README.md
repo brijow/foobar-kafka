@@ -4,9 +4,12 @@
 
 ```bash
 $ docker network create kafka-network                         # create a new docker network for kafka cluster (zookeeper, broker, kafka-manager services, and kafka connect sink services)
+$ docker network create cassandra-network                     # create a new docker network for cassandra. (kafka connect will exist on this network as well in addition to kafka-network)
+$ docker-compose -f cassandra/docker-compose.yml up -d        # start cassandra database service
 $ docker-compose -f kafka/docker-compose.yml up -d            # start single zookeeper, broker, and kafka-manager services
 $ docker-compose -f owm-producer/docker-compose.yml up -d     # start the producer that retrieves open weather map
 $ docker-compose -f twitter-producer/docker-compose.yml up -d # start the producer for twitter
+$ docker-compose -f consumers/docker-compose.yml up -d        # start the consumers
 $ docker ps -a                                                # sanity check to make sure services are up: kafka_broker_1, kafka-manager, zookeeper, kafka-connect, producer and twitter service
 ```
 
