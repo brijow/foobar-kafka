@@ -13,7 +13,7 @@ $ docker ps -a                                         # sanity check to make su
 > **Note:** 
 Kafka front end is available at http://localhost:9000
 
-Kafka-Connect REST interface is available at http://localhost:8083
+> Kafka-Connect REST interface is available at http://localhost:8083
 
 ## Starting Cassandra
 
