@@ -3,7 +3,11 @@ version: "3"
 services:
   datavis:
     container_name: datavis
-    build: .
+    hostname: datavis
+    build:
+      context: .
+      args:
+        - CONTAINER_HOSTNAME=datavis
     ports:
         - 8888:8888
 
