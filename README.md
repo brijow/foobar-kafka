@@ -1,16 +1,21 @@
 # Quickstart instructions
 
-## Starting kafka on docker
-
+#Create docker networks
 ```bash
 $ docker network create kafka-network                         # create a new docker network for kafka cluster (zookeeper, broker, kafka-manager services, and kafka connect sink services)
 $ docker network create cassandra-network                     # create a new docker network for cassandra. (kafka connect will exist on this network as well in addition to kafka-network)
-$ docker-compose -f cassandra/docker-compose.yml up -d        # start cassandra database service
-$ docker-compose -f kafka/docker-compose.yml up -d            # start single zookeeper, broker, and kafka-manager services
-$ docker-compose -f owm-producer/docker-compose.yml up -d     # start the producer that retrieves open weather map
-$ docker-compose -f twitter-producer/docker-compose.yml up -d # start the producer for twitter
-$ docker-compose -f consumers/docker-compose.yml up -d        # start the consumers
-$ docker ps -a                                                # sanity check to make sure services are up: kafka_broker_1, kafka-manager, zookeeper, kafka-connect, producer and twitter service
+```
+## Starting Cassandra
+
+Cassandra is setup so it runs keyspace and schema creation scripts at first setup so it is ready to use.
+```bash
+$ docker-compose -f cassandra/docker-compose.yml up -d
+```
+
+## Starting kafka on docker
+```bash
+$ docker-compose -f kafka/docker-compose.yml up -d            # start single zookeeper, broker, kafka-manager and kafka-connect services
+$ docker ps -a                                                # sanity check to make sure services are up: kafka_broker_1, kafka-manager, zookeeper, kafka-connect service
 ```
 
 > **Note:** 
@@ -18,11 +23,10 @@ Kafka front end is available at http://localhost:9000
 
 > Kafka-Connect REST interface is available at http://localhost:8083
 
-## Starting Cassandra
-
-Cassandra is setup so it runs keyspace and schema creation scripts at first setup so it is ready to use.
+## Starting Producers
 ```bash
-$ docker-compose -f cassandra/docker-compose.yml up -d
+$ docker-compose -f owm-producer/docker-compose.yml up -d     # start the producer that retrieves open weather map
+$ docker-compose -f twitter-producer/docker-compose.yml up -d # start the producer for twitter
 ```
 ## Starting Twitter classifier (plus Weather consumer for CSV dumps)
 
@@ -32,9 +36,13 @@ $ docker-compose -f consumers/docker-compose.yml build
 ```
 Start consumers:
 ```bash
-$ docker-compose -f consumers/docker-compose.yml up -d
+$ docker-compose -f consumers/docker-compose.yml up -d        # start the consumers
 ```
 
+## Check all containers are running with
+```bash
+$ docker ps -a                                                # sanity check to make sure services are up: kafka_broker_1, kafka-manager, zookeeper, kafka-connect service
+```
 ## Teardown
 
 To stop all running kakfa cluster services
@@ -55,6 +63,7 @@ To remove the kafka-network network:
 
 ```bash
 $ docker network rm kafka-network
+$ docker network rm cassandra-network
 ```
 
 ## Check that data is arriving to Cassandra
