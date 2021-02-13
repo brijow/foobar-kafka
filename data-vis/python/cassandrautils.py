@@ -5,23 +5,25 @@ import re
 import sys
 
 import pandas as pd
-from cassandra.cluster import BatchStatement, Cluster, ConsistencyLevel, uuid
+from cassandra.cluster import BatchStatement, Cluster, ConsistencyLevel
 from cassandra.query import dict_factory
 
 tablename = os.getenv("weather.table", "weatherreport")
 twittertable = os.getenv("twittertable.table", "twitterdata")
 
-keyspace = 'kafkapipeline'
-host = 'localhost'
+CASSANDRA_HOST = os.environ.get("CASSANDRA_HOST") if os.environ.get("CASSANDRA_HOST") else 'localhost'
+CASSANDRA_KEYSPACE = os.environ.get("CASSANDRA_KEYSPACE") if os.environ.get("CASSANDRA_KEYSPACE") else 'kafkapipeline'
 
+WEATHER_TABLE = os.environ.get("WEATHER_TABLE") if os.environ.get("WEATHER_TABLE") else 'weatherreport'
+TWITTER_TABLE = os.environ.get("TWITTER_TABLE") if os.environ.get("TWITTER_TABLE") else 'twitterdata'
 
 def saveTwitterDf(dfrecords):
-    if isinstance(host, list):
-        cluster = Cluster(host)
+    if isinstance(CASSANDRA_HOST, list):
+        cluster = Cluster(CASSANDRA_HOST)
     else:
-        cluster = Cluster([host])
+        cluster = Cluster([CASSANDRA_HOST])
 
-    session = cluster.connect(keyspace)
+    session = cluster.connect(CASSANDRA_KEYSPACE)
 
     counter = 0
     totalcount = 0
@@ -50,12 +52,12 @@ def saveTwitterDf(dfrecords):
 
 
 def saveWeatherreport(dfrecords):
-    if isinstance(host, list):
-        cluster = Cluster(host)
+    if isinstance(CASSANDRA_HOST, list):
+        cluster = Cluster(CASSANDRA_HOST)
     else:
-        cluster = Cluster([host])
+        cluster = Cluster([CASSANDRA_HOST])
 
-    session = cluster.connect(keyspace)
+    session = cluster.connect(CASSANDRA_KEYSPACE)
 
     counter = 0
     totalcount = 0
@@ -100,16 +102,21 @@ def loadDF(targetfile, target):
         saveTwitterDf(dfData)
 
 
-def getDF(source_table):
-    if isinstance(host, list):
-        cluster = Cluster(host)
-    else:
-        cluster = Cluster([host])
+def getWeatherDF():
+    return getDF(WEATHER_TABLE)
+def getTwitterDF():
+    return getDF(TWITTER_TABLE)
 
-    if source_table not in ("weatherreport", "twitterdata"):
+def getDF(source_table):
+    if isinstance(CASSANDRA_HOST, list):
+        cluster = Cluster(CASSANDRA_HOST)
+    else:
+        cluster = Cluster([CASSANDRA_HOST])
+
+    if source_table not in (WEATHER_TABLE, TWITTER_TABLE):
         return None
 
-    session = cluster.connect(keyspace)
+    session = cluster.connect(CASSANDRA_KEYSPACE)
     session.row_factory = dict_factory
     cqlquery = "SELECT * FROM " + source_table + ";"
     rows = session.execute(cqlquery)
