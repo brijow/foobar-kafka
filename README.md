@@ -1,4 +1,4 @@
-# foobar-kafka
+# foobar-kafka 🌞
 This project aims to implement a simple, but general architecture for supporting fault-tolerant data pipeline applications by utilising Kafka, Docker, and Cassandra as a collection of microservices. To demonstrate the potential feasibility of this architecture, we implement an example data-driven application to explore statistical relationships between Twitter sentiment and the weather.
 
 
