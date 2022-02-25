@@ -1,6 +1,6 @@
 # Quickstart instructions
 
-#Create docker networks
+## Create docker networks
 ```bash
 $ docker network create kafka-network                         # create a new docker network for kafka cluster (zookeeper, broker, kafka-manager services, and kafka connect sink services)
 $ docker network create cassandra-network                     # create a new docker network for cassandra. (kafka connect will exist on this network as well in addition to kafka-network)
